@@ -48,7 +48,6 @@ class Game:
     def check_board(self, fromCoords, toCoords):
         fromField = convert_coords_to_field(self, fromCoords)
         toField = convert_coords_to_field(self, toCoords)
-
         if fromField.color == toField.color:
             print("You cannnot exchange two identical gems")
             return False
@@ -59,8 +58,8 @@ class Game:
         # Check row
         legalRow = True
 
-        for field in self.fields[row]:
-            if not field.x == toField.x:
+        for field in self.fields[col]:
+            if not field.y == toField.y:
                 if field.color == fromField.color:
                     continue
                 else:
@@ -69,9 +68,9 @@ class Game:
         #Check col
         legalCol = True
         
-        for row in self.fields:
-            field = row[col]
-            if not field.y == toField.y:
+        for col in self.fields:
+            field = col[row]
+            if not field.x == toField.x:
                 if field.color == fromField.color:
                     continue
                 else:
@@ -83,14 +82,13 @@ class Game:
         return f"""
     A   B   C 
   |-----------|
-1 | {self.fields[2][0].color} | {self.fields[2][1].color} | {self.fields[2][2].color} |
+3 | {self.fields[0][2].color} | {self.fields[1][2].color} | {self.fields[2][2].color} |
   |-----------|
-2 | {self.fields[1][0].color} | {self.fields[1][1].color} | {self.fields[1][2].color} |
+2 | {self.fields[0][1].color} | {self.fields[1][1].color} | {self.fields[2][1].color} |
   |-----------|
-3 | {self.fields[0][0].color} | {self.fields[0][1].color} | {self.fields[0][2].color} |
+1 | {self.fields[0][0].color} | {self.fields[1][0].color} | {self.fields[2][0].color} |
   |-----------|
         """
-
 class Field:
     def __init__(self, x, y, color):
         self.x = x
