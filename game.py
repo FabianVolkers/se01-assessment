@@ -4,6 +4,15 @@ import math
 import string
 
 BOARD_SIZE = 5
+
+GEMS = {
+    1: "💛",
+    2: "🟢",
+    3: "🟪",
+    4: "🔷",
+    5: "🔻",
+
+}
 class Game:
     def __init__(self):
         self.fields = []
@@ -123,7 +132,7 @@ class Game:
         divider = "  |"
         for i in range(BOARD_SIZE):
             title_row += f"{string.ascii_uppercase[i]}   "
-            divider += "----"
+            divider += "-----"
         divider = divider[:-1]
         divider += "|\n"
         title_row += "\n"
@@ -131,7 +140,7 @@ class Game:
         for i in reversed(range(BOARD_SIZE)):
             row = f"{i+1} |"
             for j in range(BOARD_SIZE):
-                row += f" {self.fields[j][i].color} |"
+                row += f" {GEMS[self.fields[j][i].color]} |"
             row += "\n"
             board += row
             board += divider
