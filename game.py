@@ -60,25 +60,32 @@ class Game:
         # Check row
         legalRow = True
         inARow = 0
+
+
         for field in self.fields[col]:
+
             if not field.y == toField.y:
                 if field.color == fromField.color:
                     inARow += 1
-                elif not field.color == fromField.color and inARow < 3:
+                elif not field.color == fromField.color and inARow < 2:
                     inARow = 0
+
+        if inARow < 2:
+            legalRow = False
 
         #Check col
         legalCol = True
         inARow = 0
         for col in self.fields:
             field = col[row]
-            
-            if field.color == fromField.color:
-                inARow += 1
-            elif not field.color == fromField.color and inARow < 3:
-                inARow = 0
+
+            if not field.x == toField.x:
+                if field.color == fromField.color:
+                    inARow += 1
+                elif not field.color == fromField.color and inARow < 2:
+                    inARow = 0
                     
-        if inARow < 3:
+        if inARow < 2:
             legalCol = False
 
         return legalCol or legalRow
@@ -106,6 +113,7 @@ class Field:
         self.x = x
         self.y = y
         self.color = color
+        self.coords = f"{string.ascii_uppercase[x]}{y+1}"
 
     def __repr__(self):
         return f"({self.x}, {self.y}): {self.color}"
@@ -114,11 +122,7 @@ class Field:
 
 def get_field_input(question):
     field = input(question)
-    #field_regex = r"^[A-Ca-c]{1}[1-3]{1}$"
-    #if re.search(field_regex, field):
-        #return field
-    print(field[0] in string.ascii_uppercase[:BOARD_SIZE] or field[0] in string.ascii_lowercase[:BOARD_SIZE])
-    print(int(field[1]) in range(1, BOARD_SIZE+1))
+
     if (field[0] in string.ascii_uppercase[:BOARD_SIZE] or field[0] in string.ascii_lowercase[:BOARD_SIZE]) and int(field[1]) in range(1, BOARD_SIZE+1):
         return field
     else:
