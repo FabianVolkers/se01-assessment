@@ -1,13 +1,15 @@
 from random import randrange
 import re
 import math
+import string
 
+BOARD_SIZE = 4
 class Game:
     def __init__(self):
         self.fields = []
-        for x in range(3):
+        for x in range(BOARD_SIZE):
             self.fields.append([])
-            for y in range(3):
+            for y in range(BOARD_SIZE):
                 self.fields[x].append(Field(x, y, randrange(1, 6)))
 
     def play(self):
@@ -57,38 +59,48 @@ class Game:
 
         # Check row
         legalRow = True
-
+        inARow = 0
         for field in self.fields[col]:
             if not field.y == toField.y:
                 if field.color == fromField.color:
-                    continue
-                else:
-                    legalRow = False
+                    inARow += 1
+                elif not field.color == fromField.color and inARow < 3:
+                    inARow = 0
 
         #Check col
         legalCol = True
-        
+        inARow = 0
         for col in self.fields:
             field = col[row]
-            if not field.x == toField.x:
-                if field.color == fromField.color:
-                    continue
-                else:
-                    legalCol = False
+            
+            if field.color == fromField.color:
+                inARow += 1
+            elif not field.color == fromField.color and inARow < 3:
+                inARow = 0
+                    
+        if inARow < 3:
+            legalCol = False
 
         return legalCol or legalRow
 
     def __repr__(self):
-        return f"""
-    A   B   C 
-  |-----------|
-3 | {self.fields[0][2].color} | {self.fields[1][2].color} | {self.fields[2][2].color} |
-  |-----------|
-2 | {self.fields[0][1].color} | {self.fields[1][1].color} | {self.fields[2][1].color} |
-  |-----------|
-1 | {self.fields[0][0].color} | {self.fields[1][0].color} | {self.fields[2][0].color} |
-  |-----------|
-        """
+        title_row = "    "
+        divider = "  |"
+        for i in range(BOARD_SIZE):
+            title_row += f"{string.ascii_uppercase[i]}   "
+            divider += "----"
+        divider = divider[:-1]
+        divider += "|\n"
+        title_row += "\n"
+        board = title_row + divider
+        for i in reversed(range(BOARD_SIZE)):
+            row = f"{i+1} |"
+            for j in range(BOARD_SIZE):
+                row += f" {self.fields[j][i].color} |"
+            row += "\n"
+            board += row
+            board += divider
+        return board
 class Field:
     def __init__(self, x, y, color):
         self.x = x
@@ -102,19 +114,22 @@ class Field:
 
 def get_field_input(question):
     field = input(question)
-    field_regex = r"^[A-Ca-c]{1}[1-3]{1}$"
-    if re.search(field_regex, field):
+    #field_regex = r"^[A-Ca-c]{1}[1-3]{1}$"
+    #if re.search(field_regex, field):
+        #return field
+    print(field[0] in string.ascii_uppercase[:BOARD_SIZE] or field[0] in string.ascii_lowercase[:BOARD_SIZE])
+    print(int(field[1]) in range(1, BOARD_SIZE+1))
+    if (field[0] in string.ascii_uppercase[:BOARD_SIZE] or field[0] in string.ascii_lowercase[:BOARD_SIZE]) and int(field[1]) in range(1, BOARD_SIZE+1):
         return field
     else:
-        print("Please enter a valid field (A1 - C3)")
+        print(f"Please enter a valid field (A1 - {string.ascii_uppercase[BOARD_SIZE-1]}{BOARD_SIZE})")
         return get_field_input(question)
 
 def convert_str_to_int(str):
-    fields = {
-        "a": 1,
-        "b": 2,
-        "c": 3
-    }
+    fields = {}
+    for i in range(BOARD_SIZE):
+        fields[string.ascii_lowercase[i]] = i+1
+    
     return fields[str.lower()]
 
 def convert_coords_to_field(board, coords):
