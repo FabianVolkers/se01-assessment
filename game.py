@@ -3,7 +3,7 @@ import re
 import math
 import string
 
-BOARD_SIZE = 4
+BOARD_SIZE = 5
 class Game:
     def __init__(self):
         self.fields = []
@@ -109,9 +109,10 @@ class Game:
         legalCol = tmp[0]
         cols = tmp[1]
 
-        for i in rows:
-            self.check_row()
+        #for i in rows:
+        #    self.check_row()
 
+        
         if legalCol and legalRow:
             print("Bomb found")
 
