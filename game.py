@@ -46,47 +46,74 @@ class Game:
             return False
         else:
             return True
-        
-    def check_board(self, fromCoords, toCoords):
-        fromField = convert_coords_to_field(self, fromCoords)
-        toField = convert_coords_to_field(self, toCoords)
-        if fromField.color == toField.color:
-            print("You cannnot exchange two identical gems")
-            return False
-        
-        row = toField.y
-        col = toField.x
 
+    def check_row(self, toField, fromField):
         # Check row
         legalRow = True
         inARow = 0
-
-
+        col = toField.x
+        rows =[]
         for field in self.fields[col]:
 
             if not field.y == toField.y:
                 if field.color == fromField.color:
+                    rows.append(field.y)
                     inARow += 1
                 elif not field.color == fromField.color and inARow < 2:
                     inARow = 0
 
         if inARow < 2:
+            rows = []
             legalRow = False
 
+        return [legalRow, rows]
+
+    def check_col(self, fromField, toField):
+        row = toField.y
         #Check col
         legalCol = True
         inARow = 0
+
+        cols = []
         for col in self.fields:
             field = col[row]
 
             if not field.x == toField.x:
                 if field.color == fromField.color:
+                    cols.append(field.x)
                     inARow += 1
                 elif not field.color == fromField.color and inARow < 2:
                     inARow = 0
                     
         if inARow < 2:
             legalCol = False
+            cols = []
+        
+        return [legalCol, cols]
+
+    def check_board(self, fromCoords, toCoords):
+        fromField = convert_coords_to_field(self, fromCoords)
+        toField = convert_coords_to_field(self, toCoords)
+        if fromField.color == toField.color:
+            print("You cannot exchange two identical gems")
+            return False
+        
+        row = toField.y
+        col = toField.x
+
+        tmp = self.check_row(toField, fromField)
+        legalRow = tmp[0]
+        rows = tmp[1]
+
+        tmp = self.check_col(fromField, toField)
+        legalCol = tmp[0]
+        cols = tmp[1]
+
+        for i in rows:
+            self.check_row()
+
+        if legalCol and legalRow:
+            print("Bomb found")
 
         return legalCol or legalRow
 
